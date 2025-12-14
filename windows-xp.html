@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio - Windows XP Style</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Font Awesome for Windows icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /*
+        --------------------------------------------------
+        CUSTOM WINDOWS XP (LUNA THEME) STYLING
+        --------------------------------------------------
+        */
+
+        /* Global Styles */
+        body {
+            font-family: 'Tahoma', sans-serif;
+            user-select: none;
+            overflow: hidden; /* Prevent scrolling into oblivion with draggable elements */
+        }
+
+        /* Desktop Background (The Garden / Bliss) */
+        #desktop {
+            background-image: url('https://placehold.co/1920x1080/81C784/000000?text=The+Garden+of+Bliss');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        /* Taskbar Styling */
+        .taskbar {
+            background: linear-gradient(to right, #0055c7, #00379a);
+            border-top: 1px solid #ffffff;
+            height: 40px;
+            box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Start Button Styling */
+        .start-button {
+            background: linear-gradient(to bottom, #7fbe2c, #589c25);
+            border: 1px solid #3d7a04;
+            color: white;
+            padding: 4px 12px 4px 10px;
+            border-radius: 2px;
+            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+            transition: background 0.1s;
+        }
+
+        .start-button:hover {
+            background: linear-gradient(to bottom, #91ce43, #6fae33);
+        }
+
+        .start-button:active, .start-button.active {
+            background: linear-gradient(to top, #7fbe2c, #589c25);
+            box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.4);
+            padding: 5px 11px 3px 11px; /* Simulate being pressed down */
+        }
+
+        .start-logo {
+            width: 24px;
+            height: 24px;
+            margin-right: 6px;
+            background: url('https://placehold.co/24x24/ffffff/111111?text=XP') center center no-repeat;
+            background-size: cover;
+            border-radius: 50%;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Window Styling */
+        .window {
+            background-color: #ece9d8; /* Window background */
+            border: 1px solid #165691;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+            min-width: 300px;
+            max-width: 90vw;
+            min-height: 200px;
+            position: absolute; /* Essential for dragging */
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            display: none; /* Initially hidden */
+        }
+
+        /* Window Header Styling */
+        .window-header {
+            background: linear-gradient(to right, #0055c7, #00379a);
+            color: white;
+            padding: 4px;
+            cursor: grab;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .window-header-buttons button {
+            width: 20px;
+            height: 20px;
+            margin-left: 2px;
+            border: 1px solid #165691;
+            border-radius: 2px;
+            color: #0055c7;
+            background-color: #ece9d8;
+            box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .window-header-buttons button:hover {
+            background-color: #d8d8d8;
+        }
+
+        .window-header-buttons .close-button {
+            color: #d11e00; /* Red color for close */
+        }
+
+        /* Content Area */
+        .window-content {
+            padding: 1rem;
+            overflow-y: auto;
+            max-height: calc(100vh - 100px); /* Adjust based on taskbar and header height */
+        }
+
+        /* XP Button Styling (General) */
+        .xp-button {
+            background-color: #ece9d8;
+            border: 1px solid #165691;
+            padding: 2px 8px;
+            border-radius: 2px;
+            box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.1s;
+        }
+
+        .xp-button:hover {
+            background-color: #d8d8d8;
+        }
+
+        .xp-button:active {
+            box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+            padding: 3px 7px 1px 9px; /* Simulate being pressed down */
+        }
+
+        /* Taskbar Button (Window Minimization) */
+        .taskbar-button {
+            background: linear-gradient(to bottom, #d6e8fa, #95c1e7);
+            border: 1px solid #165691;
+            color: #000000;
+            padding: 2px 8px;
+            margin-left: 4px;
+            max-width: 150px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+        }
+
+        .taskbar-button.active {
+            background: linear-gradient(to top, #d6e8fa, #95c1e7);
+            box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid #d6e8fa;
+        }
+
+        /* Start Menu Styling */
+        .start-menu {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            width: 300px;
+            background-color: #ece9d8;
+            border: 1px solid #165691;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 10000;
+        }
+
+        .start-menu-sidebar {
+            width: 30%;
+            background: linear-gradient(to top, #0055c7, #00379a);
+            color: white;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .start-menu-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 10px;
+            cursor: pointer;
+            transition: background-color 0.1s;
+        }
+
+        .start-menu-item:hover {
+            background-color: #d8d8d8;
+            border: 1px solid #165691;
+        }
+
+        /* Desktop Icon Styling */
+        .desktop-icon {
+            position: absolute;
+            width: 80px;
+            text-align: center;
+            cursor: pointer;
+            padding: 5px;
+            border: 1px solid transparent;
+            transition: background-color 0.1s, border 0.1s;
+        }
+        .desktop-icon:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px dotted rgba(255, 255, 255, 0.7);
+        }
+        .desktop-icon-img {
+            width: 32px;
+            height: 32px;
+            margin: 0 auto 5px;
+            display: block;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        }
+        .desktop-icon-label {
+            color: white;
+            font-size: 11px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Shutdown Animation Overlay */
+        #shutdownOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #3a6ea5; /* XP Shutdown Blue */
+            z-index: 20000; /* Ensure it's on top of everything */
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            transition: background-color 3s ease-in-out;
+        }
+        #shutdownOverlay.final-blackout {
+            background-color: black;
+            font-size: 16px;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Shutdown Overlay (Hidden until activated) -->
+<div id="shutdownOverlay">
+    <div id="shutdownMessage">Windows is shutting down...</div>
+</div>
+
+<!-- Main Desktop Area -->
+<div id="desktop" class="h-screen w-screen relative">
+
+    <!-- DESKTOP ICONS -->
+    <div class="desktop-icon" style="top: 20px; left: 20px;" ondblclick="openWindow('window-about')">
+        <div class="desktop-icon-img"><i class="fas fa-user text-3xl text-blue-300"></i></div>
+        <div class="desktop-icon-label">About Me</div>
+    </div>
+    
+    <div class="desktop-icon" style="top: 100px; left: 20px;" ondblclick="openWindow('window-projects')">
+        <div class="desktop-icon-img"><i class="fas fa-folder-open text-3xl text-yellow-500"></i></div>
+        <div class="desktop-icon-label">My Projects</div>
+    </div>
+
+    <div class="desktop-icon" style="top: 180px; left: 20px;" ondblclick="openWindow('window-contact')">
+        <div class="desktop-icon-img"><i class="fas fa-envelope text-3xl text-green-500"></i></div>
+        <div class="desktop-icon-label">Contact Me</div>
+    </div>
+    
+    <!-- Start Menu -->
+    <div id="startMenu" class="start-menu">
+        <div class="flex h-full">
+            <!-- Sidebar (User/Turn Off) -->
+            <div class="start-menu-sidebar">
+                <img src="https://placehold.co/80x80/cccccc/000000?text=User" alt="User Icon" class="rounded-full mb-4 border-2 border-white">
+                <span class="text-sm font-bold">The User</span>
+                <div class="mt-auto pt-4">
+                    <button class="flex items-center text-sm font-bold bg-red-600 hover:bg-red-700 text-white p-1 rounded" onclick="turnOff()">
+                        <i class="fas fa-power-off mr-2"></i> Turn Off
+                    </button>
+                </div>
+            </div>
+            <!-- Programs/Links -->
+            <div class="flex-grow p-2">
+                <div class="start-menu-item" onclick="openWindow('window-about')">
+                    <i class="fas fa-user text-xl text-blue-600 w-6 mr-2"></i> About Me
+                </div>
+                <div class="start-menu-item" onclick="openWindow('window-projects')">
+                    <i class="fas fa-folder-open text-xl text-yellow-600 w-6 mr-2"></i> My Projects
+                </div>
+                <div class="start-menu-item" onclick="openWindow('window-contact')">
+                    <i class="fas fa-envelope text-xl text-green-600 w-6 mr-2"></i> Contact Me
+                </div>
+                <div class="border-t border-gray-400 my-2"></div>
+                <div class="start-menu-item">
+                    <i class="fas fa-cog text-xl text-gray-700 w-6 mr-2"></i> Control Panel
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 
+        ========================================
+        WINDOWS (Content Containers)
+        ========================================
+    -->
+
+    <!-- 1. About Me Window -->
+    <div id="window-about" class="window w-[500px] h-[350px]">
+        <div class="window-header" onmousedown="startDrag(event, 'window-about')">
+            <span class="text-white ml-1 font-semibold">About Me - My Computer</span>
+            <div class="window-header-buttons">
+                <button title="Minimize" onclick="minimizeWindow('window-about')"><i class="fas fa-minus"></i></button>
+                <button title="Maximize" onclick="maximizeWindow('window-about')"><i class="fas fa-square"></i></button>
+                <button title="Close" class="close-button" onclick="closeWindow('window-about')"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+        <div class="window-content h-[calc(100%-28px)] flex flex-col">
+            <h2 class="text-lg font-bold text-blue-800 border-b border-blue-300 pb-1 mb-3">Professional Summary</h2>
+            <p class="text-sm mb-4">
+                Greetings from the digital world! I am [Your Name], a developer specializing in [Your Specialization, e.g., Full-Stack JavaScript, Python, etc.]. I thrive on building responsive, scalable, and user-friendly applications, always keeping performance and clean code a top priority.
+            </p>
+            <h2 class="text-lg font-bold text-blue-800 border-b border-blue-300 pb-1 mb-3">My Stack</h2>
+            <div class="grid grid-cols-2 gap-2 text-sm">
+                <div><i class="fas fa-code mr-2 text-green-600"></i> Front-End: React, Tailwind CSS, Angular</div>
+                <div><i class="fas fa-database mr-2 text-red-600"></i> Back-End: Node.js, Django, Firebase</div>
+                <div><i class="fas fa-laptop-code mr-2 text-blue-600"></i> Tools: Git, Docker, VS Code</div>
+            </div>
+            <div class="mt-auto pt-4 text-right">
+                <button class="xp-button font-bold" onclick="openWindow('window-projects')">View My Projects >></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Projects Window -->
+    <div id="window-projects" class="window w-[650px] h-[500px]" style="left: 60%; top: 40%;">
+        <div class="window-header" onmousedown="startDrag(event, 'window-projects')">
+            <span class="text-white ml-1 font-semibold">My Projects - Internet Explorer</span>
+            <div class="window-header-buttons">
+                <button title="Minimize" onclick="minimizeWindow('window-projects')"><i class="fas fa-minus"></i></button>
+                <button title="Maximize" onclick="maximizeWindow('window-projects')"><i class="fas fa-square"></i></button>
+                <button title="Close" class="close-button" onclick="closeWindow('window-projects')"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+        <div class="window-content h-[calc(100%-28px)]">
+            <h2 class="text-xl font-bold text-orange-700 mb-4">My Development Portfolio</h2>
+            <div class="space-y-4">
+                <!-- Project 1 -->
+                <div class="border p-3 border-gray-400 bg-white">
+                    <h3 class="font-bold text-lg text-blue-700">Multiplayer Chess Game</h3>
+                    <p class="text-sm italic text-gray-600">React, Firestore, Zustand</p>
+                    <p class="text-sm mt-1">
+                        A real-time, browser-based chess application featuring user authentication and live game state synchronization via Firestore. Implemented full FIDE move validation.
+                    </p>
+                    <a href="#" class="text-xs text-blue-600 hover:underline mt-2 inline-block">[ View Repository ]</a>
+                </div>
+                <!-- Project 2 -->
+                <div class="border p-3 border-gray-400 bg-white">
+                    <h3 class="font-bold text-lg text-blue-700">AI-Powered Recipe Generator</h3>
+                    <p class="text-sm italic text-gray-600">Python, Gemini API, Flask</p>
+                    <p class="text-sm mt-1">
+                        A web service that suggests recipes based on ingredients provided by the user, utilizing the Gemini API for creative generation and structured JSON output.
+                    </p>
+                    <a href="#" class="text-xs text-blue-600 hover:underline mt-2 inline-block">[ View Live Demo ]</a>
+                </div>
+                <!-- Project 3 -->
+                <div class="border p-3 border-gray-400 bg-white">
+                    <h3 class="font-bold text-lg text-blue-700">E-commerce API Backend</h3>
+                    <p class="text-sm italic text-gray-600">Node.js, Express, MongoDB</p>
+                    <p class="text-sm mt-1">
+                        Designed and implemented a RESTful API for a scalable e-commerce platform, handling user authentication, product catalog, and payment integration (mock).
+                    </p>
+                    <a href="#" class="text-xs text-blue-600 hover:underline mt-2 inline-block">[ Documentation ]</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Contact Me Window -->
+    <div id="window-contact" class="window w-[400px] h-[300px]" style="left: 30%; top: 60%;">
+        <div class="window-header" onmousedown="startDrag(event, 'window-contact')">
+            <span class="text-white ml-1 font-semibold">Contact Me - Outlook Express</span>
+            <div class="window-header-buttons">
+                <button title="Minimize" onclick="minimizeWindow('window-contact')"><i class="fas fa-minus"></i></button>
+                <button title="Maximize" onclick="maximizeWindow('window-contact')"><i class="fas fa-square"></i></button>
+                <button title="Close" class="close-button" onclick="closeWindow('window-contact')"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+        <div class="window-content h-[calc(100%-28px)]">
+            <h2 class="text-lg font-bold text-orange-900 border-b border-orange-300 pb-1 mb-3">Let's Connect!</h2>
+            <form>
+                <div class="mb-2">
+                    <label class="block text-xs mb-1" for="name">Your Name:</label>
+                    <input type="text" id="name" class="w-full border border-gray-500 p-1 text-sm rounded-none focus:outline-none focus:border-blue-600">
+                </div>
+                <div class="mb-2">
+                    <label class="block text-xs mb-1" for="email">Your Email:</label>
+                    <input type="email" id="email" class="w-full border border-gray-500 p-1 text-sm rounded-none focus:outline-none focus:border-blue-600">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-xs mb-1" for="message">Message:</label>
+                    <textarea id="message" rows="3" class="w-full border border-gray-500 p-1 text-sm rounded-none focus:outline-none focus:border-blue-600"></textarea>
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button type="submit" class="xp-button font-bold">Send E-Mail</button>
+                    <button type="button" class="xp-button" onclick="closeWindow('window-contact')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<!-- Taskbar -->
+<div id="taskbar" class="taskbar fixed bottom-0 left-0 w-full flex items-center px-1">
+    <!-- Start Button -->
+    <button id="startButton" class="start-button" onclick="toggleStartMenu()">
+        <div class="start-logo"></div>
+        Start
+    </button>
+
+    <!-- Taskbar Buttons (Window Tabs) -->
+    <div id="taskbarButtons" class="flex h-8 ml-2 space-x-1">
+        <!-- Taskbar buttons will be inserted here by JavaScript -->
+    </div>
+
+    <!-- System Tray (Clock/Icons) -->
+    <div class="ml-auto flex items-center h-full text-xs text-white px-2">
+        <i class="fas fa-volume-up mr-2 text-sm"></i>
+        <i class="fas fa-globe mr-2 text-sm"></i>
+        <span id="systemClock">--:-- AM</span>
+    </div>
+</div>
+
+<script>
+    // Global state for window management and dragging
+    const state = {
+        activeWindowId: null,
+        dragging: false,
+        dragTarget: null,
+        offsetX: 0,
+        offsetY: 0,
+        windows: {
+            'window-about': { title: 'About Me', open: false, minimized: false, z: 1001 }, 
+            'window-projects': { title: 'My Projects', open: false, minimized: false, z: 1002 },
+            'window-contact': { title: 'Contact Me', open: false, minimized: false, z: 1003 }
+        },
+        maxZ: 1003
+    };
+
+    const desktop = document.getElementById('desktop');
+    const taskbar = document.getElementById('taskbar');
+    const taskbarButtons = document.getElementById('taskbarButtons');
+    const startMenu = document.getElementById('startMenu');
+    const startButton = document.getElementById('startButton');
+    const shutdownOverlay = document.getElementById('shutdownOverlay');
+    const shutdownMessage = document.getElementById('shutdownMessage');
+
+    /**
+     * Finds the highest Z-index among all open windows.
+     * @returns {number} The current maximum Z-index.
+     */
+    function getMaxZ() {
+        let max = 1000;
+        for (const id in state.windows) {
+            const windowEl = document.getElementById(id);
+            if (windowEl && windowEl.style.display !== 'none') {
+                const currentZ = parseInt(windowEl.style.zIndex || 0);
+                if (currentZ > max) {
+                    max = currentZ;
+                }
+            }
+        }
+        state.maxZ = max;
+        return max;
+    }
+
+    /**
+     * Renders the taskbar buttons based on the current window state.
+     */
+    function renderTaskbar() {
+        taskbarButtons.innerHTML = '';
+        for (const id in state.windows) {
+            const win = state.windows[id];
+            if (win.open) {
+                const btn = document.createElement('button');
+                btn.className = 'taskbar-button h-full text-sm';
+                if (state.activeWindowId === id) {
+                    btn.classList.add('active');
+                }
+                btn.textContent = win.title;
+                btn.onclick = () => {
+                    if (state.activeWindowId === id) {
+                        minimizeWindow(id);
+                    } else {
+                        focusWindow(id);
+                    }
+                };
+                taskbarButtons.appendChild(btn);
+            }
+        }
+    }
+
+    /**
+     * Opens or restores a window, bringing it to the front.
+     * @param {string} id - The window ID.
+     */
+    function openWindow(id) {
+        const windowEl = document.getElementById(id);
+        if (!windowEl) return;
+
+        // 1. Update state
+        state.windows[id].open = true;
+        state.windows[id].minimized = false;
+        
+        // 2. Visuals
+        windowEl.style.display = 'block';
+        
+        // 3. Focus it (handles Z-index and active state)
+        focusWindow(id);
+        
+        // 4. Close start menu if open
+        if (startMenu.style.display === 'block') {
+            toggleStartMenu();
+        }
+    }
+
+    /**
+     * Closes a window and removes its taskbar button.
+     * @param {string} id - The window ID.
+     */
+    function closeWindow(id) {
+        const windowEl = document.getElementById(id);
+        if (!windowEl) return;
+
+        // 1. Update state
+        state.windows[id].open = false;
+        state.windows[id].minimized = false;
+
+        // 2. Visuals
+        windowEl.style.display = 'none';
+
+        // 3. Update active window
+        if (state.activeWindowId === id) {
+            state.activeWindowId = null;
+        }
+
+        // 4. Re-render taskbar
+        renderTaskbar();
+    }
+
+    /**
+     * Minimizes a window to the taskbar.
+     * @param {string} id - The window ID.
+     */
+    function minimizeWindow(id) {
+        const windowEl = document.getElementById(id);
+        if (!windowEl) return;
+
+        state.windows[id].minimized = true;
+        windowEl.style.display = 'none';
+
+        // Update active window
+        if (state.activeWindowId === id) {
+            // Find the highest visible window and focus it
+            let newActiveId = null;
+            let maxZ = -1;
+            for(const otherId in state.windows) {
+                if (state.windows[otherId].open && !state.windows[otherId].minimized && state.windows[otherId].z > maxZ) {
+                    newActiveId = otherId;
+                    maxZ = state.windows[otherId].z;
+                }
+            }
+            state.activeWindowId = newActiveId;
+        }
+
+        renderTaskbar();
+    }
+
+    /**
+     * Brings a window to the front and sets it as active.
+     * @param {string} id - The window ID.
+     */
+    function focusWindow(id) {
+        const windowEl = document.getElementById(id);
+        if (!windowEl || !state.windows[id].open) return;
+
+        // If minimized, restore it
+        if (state.windows[id].minimized) {
+            state.windows[id].minimized = false;
+            windowEl.style.display = 'block';
+        }
+
+        // 1. Update Z-index
+        state.maxZ = getMaxZ() + 1;
+        windowEl.style.zIndex = state.maxZ;
+        state.windows[id].z = state.maxZ;
+
+        // 2. Update active window state
+        state.activeWindowId = id;
+
+        // 3. Re-render taskbar to show active button
+        renderTaskbar();
+    }
+
+    /**
+     * Toggles the display of the Start Menu.
+     */
+    function toggleStartMenu() {
+        if (shutdownOverlay.style.display === 'flex') return; // Do nothing if shutting down
+
+        if (startMenu.style.display === 'block') {
+            startMenu.style.display = 'none';
+            startButton.classList.remove('active');
+        } else {
+            startMenu.style.display = 'block';
+            startButton.classList.add('active');
+            // Ensure Start Menu is on top of everything
+            startMenu.style.zIndex = state.maxZ + 1;
+        }
+    }
+
+    /**
+     * Handles the "Turn Off" sequence.
+     */
+    function turnOff() {
+        // 1. Hide desktop elements (icons, taskbar, start menu, windows)
+        taskbar.style.display = 'none';
+        startMenu.style.display = 'none';
+        desktop.querySelectorAll('.desktop-icon').forEach(icon => icon.style.display = 'none');
+        
+        for (const id in state.windows) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        // 2. Show the shutdown overlay
+        shutdownOverlay.style.display = 'flex';
+        shutdownMessage.textContent = 'Windows is shutting down...';
+
+        // 3. Simulated shutdown sequence
+        setTimeout(() => {
+            shutdownMessage.textContent = 'Saving your settings...';
+        }, 1000);
+
+        setTimeout(() => {
+            shutdownMessage.textContent = 'Preparing system to power down...';
+        }, 3000);
+
+        // 4. Final blackout screen
+        setTimeout(() => {
+            shutdownOverlay.classList.add('final-blackout');
+            shutdownMessage.innerHTML = 'It is now safe to turn off your computer.<br><br><span style="font-size: 12px; font-weight: normal;">(To restart this portfolio, refresh the page)</span>';
+        }, 5000);
+    }
+
+    //
+    // WINDOW DRAGGING LOGIC
+    //
+
+    /**
+     * Initiates the drag operation on mousedown.
+     * @param {MouseEvent} e - The mousedown event.
+     * @param {string} id - The window ID.
+     */
+    function startDrag(e, id) {
+        e.preventDefault();
+        if (shutdownOverlay.style.display === 'flex') return;
+
+        // Bring the window to front first (Done on mousedown to ensure Z-index is correct before drag)
+        focusWindow(id);
+
+        state.dragging = true;
+        const windowEl = document.getElementById(id);
+        state.dragTarget = windowEl;
+
+        // Calculate offset (mouse position relative to top-left of the window)
+        const rect = windowEl.getBoundingClientRect();
+        state.offsetX = e.clientX - rect.left;
+        state.offsetY = e.clientY - rect.top;
+
+        // Add event listeners to the document for dragging
+        document.addEventListener('mousemove', handleDrag);
+        document.addEventListener('mouseup', endDrag);
+        state.dragTarget.style.cursor = 'grabbing';
+    }
+
+    /**
+     * Handles the drag movement on mousemove.
+     * @param {MouseEvent} e - The mousemove event.
+     */
+    function handleDrag(e) {
+        if (!state.dragging || !state.dragTarget) return;
+
+        // Calculate new position
+        let newX = e.clientX - state.offsetX;
+        let newY = e.clientY - state.offsetY;
+
+        // Clamp the position to keep the window on the screen
+        const minX = 0;
+        const minY = 0;
+        const maxX = window.innerWidth - state.dragTarget.offsetWidth;
+        const maxY = window.innerHeight - state.dragTarget.offsetHeight - 40; // 40px for taskbar
+
+        newX = Math.max(minX, Math.min(newX, maxX));
+        newY = Math.max(minY, Math.min(newY, maxY));
+
+        // Apply new position
+        state.dragTarget.style.left = `${newX}px`;
+        state.dragTarget.style.top = `${newY}px`;
+        // Remove transform after initial center positioning
+        state.dragTarget.style.transform = 'none';
+    }
+
+    /**
+     * Ends the drag operation on mouseup.
+     */
+    function endDrag() {
+        if (state.dragging && state.dragTarget) {
+            state.dragging = false;
+            state.dragTarget.style.cursor = 'grab';
+            state.dragTarget = null;
+            document.removeEventListener('mousemove', handleDrag);
+            document.removeEventListener('mouseup', endDrag);
+        }
+    }
+
+    /**
+     * Updates the system clock every second.
+     */
+    function updateClock() {
+        const now = new Date();
+        const clockEl = document.getElementById('systemClock');
+        const options = { hour: '2-digit', minute: '2-digit', hour12: true };
+        clockEl.textContent = now.toLocaleTimeString('en-US', options);
+    }
+
+    /**
+     * Main initialization function.
+     */
+    function init() {
+        // Initial setup for the clock
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Close start menu if user clicks anywhere else on the desktop
+        desktop.addEventListener('mousedown', (e) => {
+            // Check if click target is outside the start menu and not the start button
+            if (startMenu.style.display === 'block' && 
+                !startMenu.contains(e.target) && 
+                !startButton.contains(e.target)) {
+                toggleStartMenu();
+            }
+        });
+
+        // Get references to the window elements
+        const aboutEl = document.getElementById('window-about');
+        const projectsEl = document.getElementById('window-projects');
+        const contactEl = document.getElementById('window-contact');
+        
+        const windowElements = [aboutEl, projectsEl, contactEl];
+
+        // Attach focus listener to the entire window on click. 
+        windowElements.forEach(el => {
+            el.addEventListener('mousedown', (e) => {
+                // Focus the window when clicked anywhere inside it (except the header, which handles drag/focus via mousedown)
+                if (e.target.closest('.window-header')) {
+                    // Header handles focus via startDrag/mousedown
+                    return;
+                }
+                focusWindow(el.id);
+            });
+        });
+        
+        // --- Make 'About Me' visible and active initially ---
+        aboutEl.style.display = 'block';
+        state.windows['window-about'].open = true;
+        state.activeWindowId = 'window-about';
+        
+        // 3. Set initial Z-index based on state configuration
+        getMaxZ();
+        aboutEl.style.zIndex = state.windows['window-about'].z;
+        projectsEl.style.zIndex = state.windows['window-projects'].z;
+        contactEl.style.zIndex = state.windows['window-contact'].z;
+        
+        // 4. Render taskbar for the initial window
+        renderTaskbar();
+    }
+
+    // Run initialization when the window loads
+    window.onload = init;
+</script>
+
+</body>
+</html>
